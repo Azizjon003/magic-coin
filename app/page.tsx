@@ -17,6 +17,8 @@ const AUTO_CLICK_RATE = 5; // Coins per auto-click event
 const AUTO_CLICK_INTERVAL = 1000; // Milliseconds (1 second for auto-click)
 const CRITICAL_CLICK_CHANCE = 0.1; // 10% chance
 const CRITICAL_CLICK_MULTIPLIER = 5; // 5x bonus
+const TEMPORARY_BOOST_DURATION = 30; // seconds
+const TEMPORARY_BOOST_ADDITIONAL_POWER = 10; // e.g., click power becomes base + 10
 
 interface RegenFeedbackTextState {
   // Interface for regen feedback text
@@ -38,16 +40,32 @@ export default function HomePage() {
 
   // New states for boosts
   const [isAutoClickActive, setIsAutoClickActive] = useState(false);
-  const [clickPower, setClickPower] = useState(5); // User changed this to 5
-  const [isX2MultiplierActive, setIsX2MultiplierActive] = useState(true); // New state for x2 Multiplier
+  const [clickPower, setClickPower] = useState(5); // Base click power
+  const [isX2MultiplierActive, setIsX2MultiplierActive] = useState(true);
   const [lastClickInfo, setLastClickInfo] = useState<{
     amount: number;
     isCritical: boolean;
   } | null>(null);
 
+  // Temporary Boost states
+  const [isTemporaryBoostActive, setIsTemporaryBoostActive] = useState(false);
+  const [temporaryBoostEndTime, setTemporaryBoostEndTime] = useState<
+    number | null
+  >(null);
+  const [temporaryBoostTimeLeft, setTemporaryBoostTimeLeft] = useState(0); // New state for time left display
+
+  const calculateEffectiveClickPower = () => {
+    let effectivePower = clickPower;
+    if (isTemporaryBoostActive) {
+      effectivePower += TEMPORARY_BOOST_ADDITIONAL_POWER;
+    }
+    return effectivePower;
+  };
+
   const handleCoinClick = () => {
     if (energy >= 10) {
-      let amountToAdd = clickPower;
+      let currentEffectiveClickPower = calculateEffectiveClickPower();
+      let amountToAdd = currentEffectiveClickPower;
       let isCritical = false;
 
       if (isX2MultiplierActive) {
@@ -124,6 +142,47 @@ export default function HomePage() {
     };
   }, [isAutoClickActive, isX2MultiplierActive]); // Add isX2MultiplierActive to dependencies
 
+  // useEffect for managing Temporary Boost timer AND updating timeLeft display
+  useEffect(() => {
+    if (!isTemporaryBoostActive || !temporaryBoostEndTime) {
+      setTemporaryBoostTimeLeft(0);
+      return;
+    }
+
+    // Set initial timeLeft immediately
+    setTemporaryBoostTimeLeft(
+      Math.max(0, Math.round((temporaryBoostEndTime - Date.now()) / 1000))
+    );
+
+    const timer = setInterval(() => {
+      const timeLeft = Math.max(
+        0,
+        Math.round((temporaryBoostEndTime - Date.now()) / 1000)
+      );
+      setTemporaryBoostTimeLeft(timeLeft);
+
+      if (timeLeft <= 0) {
+        console.log("Temporary Boost Deactivated!");
+        setIsTemporaryBoostActive(false);
+        setTemporaryBoostEndTime(null);
+        clearInterval(timer);
+      }
+    }, 1000); // Check every second
+
+    return () => clearInterval(timer);
+  }, [isTemporaryBoostActive, temporaryBoostEndTime]);
+
+  const activateTemporaryBoost = () => {
+    // Check if the boost is already active to prevent re-activation
+    if (!isTemporaryBoostActive) {
+      console.log("Temporary Boost Activated!");
+      setIsTemporaryBoostActive(true);
+      setTemporaryBoostEndTime(Date.now() + TEMPORARY_BOOST_DURATION * 1000);
+      // Optionally, set initial timeLeft here as well, or let the useEffect handle it
+      // setTemporaryBoostTimeLeft(TEMPORARY_BOOST_DURATION);
+    }
+  };
+
   return (
     <main
       style={{
@@ -183,6 +242,26 @@ export default function HomePage() {
         }}
       >
         <CoinCounter count={coinCount} />
+        {isTemporaryBoostActive && temporaryBoostTimeLeft > 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              marginTop: "5px",
+              marginBottom: "5px",
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: "0.9rem",
+                color: "#FFD700",
+                fontWeight: "bold",
+              }}
+            >
+              🚀 Boost Active: {temporaryBoostTimeLeft}s
+            </p>
+          </div>
+        )}
         <EnergyBar currentEnergy={energy} maxEnergy={maxEnergy} />
         {/* Energy Info Text Display */}
         <div
@@ -260,7 +339,12 @@ export default function HomePage() {
         </div>
       </div>
 
-      <BoostsMenu isOpen={isBoostsMenuOpen} onClose={toggleBoostsMenu} />
+      <BoostsMenu
+        isOpen={isBoostsMenuOpen}
+        onClose={toggleBoostsMenu}
+        onActivateTemporaryBoost={activateTemporaryBoost}
+        isTemporaryBoostActive={isTemporaryBoostActive}
+      />
     </main>
   );
 }
