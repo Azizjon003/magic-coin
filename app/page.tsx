@@ -35,15 +35,21 @@ export default function HomePage() {
   >([]); // State for regen texts
 
   // New states for boosts
-  const [isAutoClickActive, setIsAutoClickActive] = useState(false); // Default: false
-  const [clickPower, setClickPower] = useState(5); // Default: 1
+  const [isAutoClickActive, setIsAutoClickActive] = useState(false);
+  const [clickPower, setClickPower] = useState(5); // User changed this to 5
+  const [isX2MultiplierActive, setIsX2MultiplierActive] = useState(true); // New state for x2 Multiplier
 
   const handleCoinClick = () => {
     if (energy >= 10) {
-      const amountToAdd = clickPower;
+      let amountToAdd = clickPower;
+      if (isX2MultiplierActive) {
+        amountToAdd *= 2;
+      }
       setCoinCount((prev) => prev + amountToAdd);
       setEnergy((prev) => Math.max(0, prev - 10));
-      // Visual feedback is handled by GameButton internally using its own props now
+      // GameButton will still display base clickPower in its +N text via props,
+      // or we could pass the final calculated `amountToAdd` to GameButton if we want it to show `+10` instead of `+5` when x2 is active.
+      // For now, let's keep it simple: GameButton shows `+baseClickPower`.
     }
   };
 
@@ -94,14 +100,17 @@ export default function HomePage() {
     if (!isAutoClickActive) return;
 
     const autoClickTimer = setInterval(() => {
-      setCoinCount((prevCoinCount) => prevCoinCount + AUTO_CLICK_RATE);
-      // Optionally, add a visual feedback for auto-clicks here too
+      let amountFromAutoClick = AUTO_CLICK_RATE;
+      if (isX2MultiplierActive) {
+        amountFromAutoClick *= 2;
+      }
+      setCoinCount((prevCoinCount) => prevCoinCount + amountFromAutoClick);
     }, AUTO_CLICK_INTERVAL);
 
     return () => {
       clearInterval(autoClickTimer);
     };
-  }, [isAutoClickActive]); // Rerun if isAutoClickActive changes
+  }, [isAutoClickActive, isX2MultiplierActive]); // Add isX2MultiplierActive to dependencies
 
   return (
     <main
