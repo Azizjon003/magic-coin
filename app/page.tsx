@@ -93,6 +93,15 @@ export default function HomePage() {
     );
   };
 
+  // Boost toggle functions
+  const toggleAutoClick = () => {
+    setIsAutoClickActive((prev) => !prev);
+  };
+
+  const toggleX2Multiplier = () => {
+    setIsX2MultiplierActive((prev) => !prev);
+  };
+
   useEffect(() => {
     const timer = setInterval(() => {
       setEnergy((prevEnergy) => {
@@ -344,6 +353,10 @@ export default function HomePage() {
         onClose={toggleBoostsMenu}
         onActivateTemporaryBoost={activateTemporaryBoost}
         isTemporaryBoostActive={isTemporaryBoostActive}
+        isAutoClickActive={isAutoClickActive}
+        toggleAutoClick={toggleAutoClick}
+        isX2MultiplierActive={isX2MultiplierActive}
+        toggleX2Multiplier={toggleX2Multiplier}
       />
     </main>
   );

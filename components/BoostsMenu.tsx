@@ -7,6 +7,10 @@ interface BoostsMenuProps {
   onClose: () => void;
   onActivateTemporaryBoost: () => void;
   isTemporaryBoostActive: boolean;
+  isAutoClickActive: boolean;
+  toggleAutoClick: () => void;
+  isX2MultiplierActive: boolean;
+  toggleX2Multiplier: () => void;
 }
 
 export default function BoostsMenu({
@@ -14,6 +18,10 @@ export default function BoostsMenu({
   onClose,
   onActivateTemporaryBoost,
   isTemporaryBoostActive,
+  isAutoClickActive,
+  toggleAutoClick,
+  isX2MultiplierActive,
+  toggleX2Multiplier,
 }: BoostsMenuProps) {
   if (!isOpen) {
     return null;
@@ -29,11 +37,15 @@ export default function BoostsMenu({
         <ul className={styles.boostsList}>
           <li className={styles.boostItem}>
             <span>🚀 Auto-Tap Wand (1000 coins)</span>
-            <button className={styles.buyButton}>Buy</button>
+            <button className={styles.buyButton} onClick={toggleAutoClick}>
+              {isAutoClickActive ? "Deactivate" : "Activate"}
+            </button>
           </li>
           <li className={styles.boostItem}>
             <span>✨ x2 Multiplier (5000 coins)</span>
-            <button className={styles.buyButton}>Buy</button>
+            <button className={styles.buyButton} onClick={toggleX2Multiplier}>
+              {isX2MultiplierActive ? "Deactivate" : "Activate"}
+            </button>
           </li>
           <li className={styles.boostItem}>
             <span>🚀 Temporary Click Power Boost (30s)</span>
