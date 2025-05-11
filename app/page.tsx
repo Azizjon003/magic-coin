@@ -11,8 +11,10 @@ import LeaderboardDisplay from "../components/LeaderboardDisplay"; // Import Lea
 import ActionButton from "../components/ActionButton"; // Import ActionButton
 import RegenFeedbackText from "../components/RegenFeedbackText"; // Import RegenFeedbackText
 
-const ENERGY_REGENERATION_RATE = 1;
+const ENERGY_REGENERATION_RATE = 10;
 const ENERGY_REGENERATION_INTERVAL = 1000;
+const AUTO_CLICK_RATE = 5; // Coins per auto-click event
+const AUTO_CLICK_INTERVAL = 1000; // Milliseconds (1 second for auto-click)
 
 interface RegenFeedbackTextState {
   // Interface for regen feedback text
@@ -32,9 +34,17 @@ export default function HomePage() {
     RegenFeedbackTextState[]
   >([]); // State for regen texts
 
+  // New states for boosts
+  const [isAutoClickActive, setIsAutoClickActive] = useState(false); // Default: false
+  const [clickPower, setClickPower] = useState(5); // Default: 1
+
   const handleCoinClick = () => {
-    setCoinCount((prev) => prev + 1);
-    setEnergy((prev) => Math.max(0, prev - 10)); // Decrease energy on click
+    if (energy >= 10) {
+      const amountToAdd = clickPower;
+      setCoinCount((prev) => prev + amountToAdd);
+      setEnergy((prev) => Math.max(0, prev - 10));
+      // Visual feedback is handled by GameButton internally using its own props now
+    }
   };
 
   const toggleBoostsMenu = () => {
@@ -78,6 +88,20 @@ export default function HomePage() {
       clearInterval(timer);
     };
   }, [maxEnergy]); // Removed ENERGY_REGENERATION_RATE as it's a constant and won't change behavior here
+
+  // Effect for Auto-click
+  useEffect(() => {
+    if (!isAutoClickActive) return;
+
+    const autoClickTimer = setInterval(() => {
+      setCoinCount((prevCoinCount) => prevCoinCount + AUTO_CLICK_RATE);
+      // Optionally, add a visual feedback for auto-clicks here too
+    }, AUTO_CLICK_INTERVAL);
+
+    return () => {
+      clearInterval(autoClickTimer);
+    };
+  }, [isAutoClickActive]); // Rerun if isAutoClickActive changes
 
   return (
     <main
@@ -163,7 +187,7 @@ export default function HomePage() {
             (+{ENERGY_REGENERATION_RATE}/s)
           </span>
         </div>
-        <GameButton onClick={handleCoinClick} />
+        <GameButton onInteraction={handleCoinClick} clickPower={clickPower} />
       </div>
 
       {/* Bottom Section: Action Buttons & Info Icon */}

@@ -6,7 +6,12 @@ import TapParticle from "./TapParticle"; // Import the particle component
 import ClickFeedbackText from "./ClickFeedbackText"; // Import the new feedback text component
 
 interface GameButtonProps {
-  onClick: () => void;
+  onInteraction: (
+    clientX: number,
+    clientY: number,
+    currentTarget: HTMLButtonElement
+  ) => void;
+  clickPower: number;
 }
 
 interface ParticleState {
@@ -22,26 +27,27 @@ interface ClickFeedbackTextState {
   y: number;
 }
 
-const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
+const GameButton: React.FC<GameButtonProps> = ({
+  onInteraction,
+  clickPower,
+}) => {
   const [particles, setParticles] = useState<ParticleState[]>([]);
   const [clickFeedbackTexts, setClickFeedbackTexts] = useState<
     ClickFeedbackTextState[]
   >([]);
 
-  // Combined handler for both mouse click and touch start
-  const handleInteraction = (
+  const handleLocalInteraction = (
     clientX: number,
     clientY: number,
     currentTarget: HTMLButtonElement
   ) => {
-    onClick(); // Call original onClick passed from parent (e.g., to update coin count)
+    onInteraction(clientX, clientY, currentTarget);
 
     const rect = currentTarget.getBoundingClientRect();
     const interactionX = clientX - rect.left;
     const interactionY = clientY - rect.top;
 
-    // Create a few particles at interaction location
-    const numParticles = 3 + Math.floor(Math.random() * 3); // Reduced: 3 to 5 particles
+    const numParticles = 3 + Math.floor(Math.random() * 3);
     const newParticles: ParticleState[] = [];
     for (let i = 0; i < numParticles; i++) {
       newParticles.push({
@@ -54,10 +60,9 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
     }
     setParticles((prevParticles) => [...prevParticles, ...newParticles]);
 
-    // Create a "+1" feedback text
     const newFeedbackText: ClickFeedbackTextState = {
       id: `feedback-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-      text: "+1",
+      text: `+${clickPower}`,
       x: interactionX,
       y: interactionY,
     };
@@ -65,13 +70,12 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
   };
 
   const handleMouseClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    handleInteraction(event.clientX, event.clientY, event.currentTarget);
+    handleLocalInteraction(event.clientX, event.clientY, event.currentTarget);
   };
 
   const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
-    // Iterate over all new touches (fingers)
     Array.from(event.changedTouches).forEach((touch) => {
-      handleInteraction(touch.clientX, touch.clientY, event.currentTarget);
+      handleLocalInteraction(touch.clientX, touch.clientY, event.currentTarget);
     });
   };
 
@@ -87,15 +91,15 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
 
   return (
     <button
-      onClick={handleMouseClick} // Keep for desktop compatibility
-      onTouchStart={handleTouchStart} // Add touch handler for multi-touch
+      onClick={handleMouseClick}
+      onTouchStart={handleTouchStart}
       className="game-button"
       style={{
-        width: "250px", // Increased size to be the main coin
-        height: "250px", // Increased size
+        width: "250px",
+        height: "250px",
         borderRadius: "50%",
-        backgroundColor: "#F39C12", // Base orange color for the coin
-        border: "3px solid #D35400", // Darker orange border for some definition
+        backgroundColor: "#F39C12",
+        border: "3px solid #D35400",
         color: "white",
         cursor: "pointer",
         display: "flex",
@@ -115,9 +119,8 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
       }}
       onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
       onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")} // Reset if mouse leaves while pressed
+      onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
     >
-      {/* Render particles */}
       {particles.map((particle) => (
         <TapParticle
           key={particle.id}
@@ -128,7 +131,6 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
         />
       ))}
 
-      {/* Render click feedback texts */}
       {clickFeedbackTexts.map((feedback) => (
         <ClickFeedbackText
           key={feedback.id}
@@ -139,24 +141,6 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
           onComplete={removeClickFeedbackText}
         />
       ))}
-
-      {/* Central glowing element is now the button itself */}
-      {/* The content below can be removed or repurposed if needed, for now, it's effectively hidden by the button's own styling */}
-      {/* <div
-        className="game-button-icon"
-        style={{
-          width: "70px", 
-          height: "70px",
-          borderRadius: "50%",
-          background:
-            "radial-gradient(circle, rgba(100,255,180,1) 0%, rgba(78,255,161,0.7) 50%, rgba(78,255,161,0) 90%)",
-          boxShadow:
-            "0 0 15px rgba(78,255,161,0.7), 0 0 25px rgba(78,255,161,0.4)",
-          WebkitBackdropFilter: "blur(5px)", 
-          backdropFilter: "blur(5px)",
-          border: "1px solid rgba(255, 255, 255, 0.1)",
-        }}
-      /> */}
     </button>
   );
 };
