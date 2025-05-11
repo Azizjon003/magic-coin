@@ -1,6 +1,6 @@
 "use client"; // This page is interactive, so it needs to be a Client Component
 
-import React, { useState } from "react"; // Import useState
+import React, { useState, useEffect } from "react"; // Import useState and useEffect
 // import Image from 'next/image'; // Image import is not used currently
 import CoinCounter from "../components/CoinCounter";
 import GameButton from "../components/GameButton";
@@ -9,6 +9,16 @@ import EnergyBar from "../components/EnergyBar"; // Import EnergyBar
 import FriendCounter from "../components/FriendCounter"; // Import FriendCounter
 import LeaderboardDisplay from "../components/LeaderboardDisplay"; // Import LeaderboardDisplay
 import ActionButton from "../components/ActionButton"; // Import ActionButton
+import RegenFeedbackText from "../components/RegenFeedbackText"; // Import RegenFeedbackText
+
+const ENERGY_REGENERATION_RATE = 1;
+const ENERGY_REGENERATION_INTERVAL = 1000;
+
+interface RegenFeedbackTextState {
+  // Interface for regen feedback text
+  id: string;
+  text: string;
+}
 
 export default function HomePage() {
   const [coinCount, setCoinCount] = useState(18); // Updated to match image
@@ -18,6 +28,9 @@ export default function HomePage() {
   const [friendCount, setFriendCount] = useState(42); // Updated to match image
   const [leaderboardRank, setLeaderboardRank] = useState(1337); // Updated to match image
   const [leaderboardBadge, setLeaderboardBadge] = useState(""); // Removed trophy badge
+  const [regenFeedbackTexts, setRegenFeedbackTexts] = useState<
+    RegenFeedbackTextState[]
+  >([]); // State for regen texts
 
   const handleCoinClick = () => {
     setCoinCount((prev) => prev + 1);
@@ -27,6 +40,44 @@ export default function HomePage() {
   const toggleBoostsMenu = () => {
     setIsBoostsMenuOpen(!isBoostsMenuOpen);
   };
+
+  const removeRegenFeedbackText = (id: string) => {
+    setRegenFeedbackTexts((prevTexts) =>
+      prevTexts.filter((text) => text.id !== id)
+    );
+  };
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setEnergy((prevEnergy) => {
+        if (prevEnergy < maxEnergy) {
+          const newEnergy = Math.min(
+            prevEnergy + ENERGY_REGENERATION_RATE,
+            maxEnergy
+          );
+          if (newEnergy > prevEnergy) {
+            const newFeedback: RegenFeedbackTextState = {
+              // Improved ID generation with Math.random()
+              id: `regen-${Date.now()}-${Math.random()
+                .toString(36)
+                .substr(2, 5)}`,
+              text: `+${ENERGY_REGENERATION_RATE}⚡`,
+            };
+            setRegenFeedbackTexts((prevFeedback) => [
+              ...prevFeedback,
+              newFeedback,
+            ]);
+          }
+          return newEnergy;
+        }
+        return prevEnergy;
+      });
+    }, ENERGY_REGENERATION_INTERVAL);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [maxEnergy]); // Removed ENERGY_REGENERATION_RATE as it's a constant and won't change behavior here
 
   return (
     <main
@@ -46,6 +97,16 @@ export default function HomePage() {
         overflow: "hidden",
       }}
     >
+      {/* Regen Feedback Texts - rendered in the main container to use absolute positioning effectively */}
+      {regenFeedbackTexts.map((feedback) => (
+        <RegenFeedbackText
+          key={feedback.id}
+          id={feedback.id}
+          text={feedback.text}
+          onComplete={removeRegenFeedbackText}
+        />
+      ))}
+
       {/* Top Section: Leaderboard, Settings, Friends */}
       <div
         style={{
@@ -70,7 +131,7 @@ export default function HomePage() {
         style={{
           flexGrow: 1,
           display: "flex",
-          flexDirection: "column", // Stack coin count, energy bar, and button vertically
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           width: "100%",
@@ -78,6 +139,30 @@ export default function HomePage() {
       >
         <CoinCounter count={coinCount} />
         <EnergyBar currentEnergy={energy} maxEnergy={maxEnergy} />
+        {/* Energy Info Text Display */}
+        <div
+          style={{
+            color: "rgba(255, 255, 255, 0.9)",
+            fontSize: "0.8rem",
+            margin: 0,
+            marginTop: "4px", // Spacing from EnergyBar
+            marginBottom: "15px", // Spacing before GameButton
+            fontWeight: "500",
+            textAlign: "center",
+            display: "flex", // To place items side-by-side
+            alignItems: "center",
+            gap: "10px", // Space between limit and regen rate
+          }}
+        >
+          <span>
+            {energy} / {maxEnergy}
+          </span>
+          <span
+            style={{ fontSize: "0.7rem", color: "rgba(255, 255, 255, 0.7)" }}
+          >
+            (+{ENERGY_REGENERATION_RATE}/s)
+          </span>
+        </div>
         <GameButton onClick={handleCoinClick} />
       </div>
 

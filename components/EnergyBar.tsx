@@ -11,11 +11,11 @@ const EnergyBar: React.FC<EnergyBarProps> = ({ currentEnergy, maxEnergy }) => {
   return (
     <div
       style={{
-        width: "80%",
+        width: "100%",
         maxWidth: "350px",
         backgroundColor: "rgba(0, 0, 0, 0.2)", // Slightly more transparent track background
         borderRadius: "10px",
-        marginBottom: "20px", // Adjusted margin for spacing like in the image
+        marginBottom: "5px", // Reduced margin as text will be below
         height: "12px", // Made the bar thinner to match image
         display: "flex", // Added to help align inner bar if needed, though not strictly necessary for this simple case
         alignItems: "center", // Vertically center the fill if padding was present on inner
@@ -30,7 +30,7 @@ const EnergyBar: React.FC<EnergyBarProps> = ({ currentEnergy, maxEnergy }) => {
           transition: "width 0.5s ease-in-out",
         }}
       >
-        {/* Removed energy text display */}
+        {/* Text display removed from here */}
       </div>
     </div>
   );
