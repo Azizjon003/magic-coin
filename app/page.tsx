@@ -38,13 +38,21 @@ export default function HomePage() {
         minHeight: "100vh",
         padding: "1rem",
         position: "relative",
-        // Updated radial gradient with greenish-blue hues
-        // Noise texture could be added via a global CSS on body/html or a ::before pseudo-element with a base64 noise image
-        // e.g., background: 'radial-gradient(ellipse at center, #1a3a3a 0%, #0a1f1f 70%), url(data:image/png;base64,iVBOR...)',
-        background:
-          "radial-gradient(ellipse at center, #183830 0%, #081810 70%)", // Dark greenish-blue hues
+        // Updated radial gradient with greenish-blue hues AND added CSS noise
+        background: `
+          linear-gradient(rgba(0,0,0,0.03), rgba(0,0,0,0.03)),
+          radial-gradient(ellipse at center, #183830 0%, #081810 70%)
+        `,
+        // For a more pronounced noise, you might use multiple linear gradients or a pseudo-element with a noise SVG/image.
+        // Example for more detailed noise (can be performance intensive if too many layers):
+        // background: `
+        //   linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)),
+        //   linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)) 0.5px 0.5px,
+        //   radial-gradient(ellipse at center, #183830 0%, #081810 70%)
+        // `,
+        // backgroundSize: '1px 1px, 1px 1px, auto', // If using the more detailed noise example
         color: "#fff",
-        overflow: "hidden", // To contain any potential particle effects if they go out of bounds
+        overflow: "hidden",
       }}
     >
       {/* Top Section: Coin Counter & Leaderboard */}

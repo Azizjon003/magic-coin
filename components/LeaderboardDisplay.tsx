@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../components/CoinCounter.css"; // Import to use .text-shimmer-effect and .bounce-effect
 
 interface LeaderboardDisplayProps {
   rank: number;
@@ -54,6 +55,8 @@ const LeaderboardDisplay: React.FC<LeaderboardDisplayProps> = ({
         Rank: {rank}
       </div>
       <div
+        // Apply bounce effect also to the badge container if desired
+        className={isBouncing ? "bounce-effect" : ""} // Reusing bounce-effect from CoinCounter.css
         style={{
           fontSize: "0.9rem",
           fontWeight: "600",
@@ -66,9 +69,12 @@ const LeaderboardDisplay: React.FC<LeaderboardDisplayProps> = ({
           textShadow: badgeTextShadow,
           minWidth: "80px",
           textAlign: "center",
+          // transform: isBouncing ? 'translateY(-5px)' : 'translateY(0)', // Replaced by class
+          // transition: 'transform 0.15s ease-out', // Handled by class
         }}
       >
-        {badge}
+        <span className="text-shimmer-effect">{badge}</span>{" "}
+        {/* Apply shimmer to badge text */}
       </div>
     </div>
   );

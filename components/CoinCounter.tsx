@@ -32,7 +32,7 @@ const CoinCounter: React.FC<CoinCounterProps> = ({ count }) => {
       }}
     >
       <h1
-        className={`coin-count-shimmer ${isBouncing ? "bounce-effect" : ""}`}
+        className={`text-shimmer-effect ${isBouncing ? "bounce-effect" : ""}`}
         style={{
           fontSize: "3.5rem", // Large, bold numbers
           fontWeight: "bold",
