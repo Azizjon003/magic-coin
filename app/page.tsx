@@ -40,7 +40,7 @@ export default function HomePage() {
 
   // New states for boosts
   const [isAutoClickActive, setIsAutoClickActive] = useState(false);
-  const [clickPower, setClickPower] = useState(5); // Base click power
+  const [clickPower] = useState(5); // Base click power
   const [isX2MultiplierActive, setIsX2MultiplierActive] = useState(true);
   const [lastClickInfo, setLastClickInfo] = useState<{
     amount: number;
@@ -64,7 +64,8 @@ export default function HomePage() {
 
   const handleCoinClick = () => {
     if (energy >= 10) {
-      let currentEffectiveClickPower = calculateEffectiveClickPower();
+      const currentEffectiveClickPower = calculateEffectiveClickPower();
+      console.log("Current effective click power:", currentEffectiveClickPower);
       let amountToAdd = currentEffectiveClickPower;
       let isCritical = false;
 
