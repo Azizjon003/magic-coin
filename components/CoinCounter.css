@@ -1,0 +1,32 @@
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px); /* Adjust bounce height */
+  }
+}
+
+.coin-count-shimmer {
+  background: linear-gradient(to right, #ffffff 20%, #4effa1 40%, #ffffff 60%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 5s infinite linear;
+  display: inline-block; /* Important for background-clip to work as expected with text */
+}
+
+.bounce-effect {
+  animation: bounce 0.3s ease-out;
+}
