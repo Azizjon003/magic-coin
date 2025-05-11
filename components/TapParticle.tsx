@@ -41,13 +41,13 @@ const TapParticle: React.FC<TapParticleProps> = ({
         top: `${startY}px`,
         width: "8px",
         height: "8px",
-        backgroundColor: "#4EFFA1", // Neon green sparks
+        backgroundColor: "#FFC300", // Orange/Yellow sparks to match the coin
         borderRadius: "50%",
         opacity: opacity,
         transform: transform,
         transition: `transform ${duration}ms ease-out, opacity ${duration}ms ease-out`,
         pointerEvents: "none", // Don't interfere with button clicks
-        boxShadow: "0 0 5px #4EFFA1, 0 0 10px #4EFFA1", // Glow for particles
+        boxShadow: "0 0 5px #FFC300, 0 0 10px #FFD700", // Orange/Yellow glow for particles
         zIndex: 10, // Above button content
       }}
     />

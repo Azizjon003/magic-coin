@@ -23,28 +23,38 @@ const CoinCounter: React.FC<CoinCounterProps> = ({ count }) => {
     <div
       style={{
         textAlign: "center",
-        // Removed specific top/left positioning to be controlled by parent in HomePage
-        // position: 'absolute',
-        // top: '20px',
-        // left: '50%',
-        // transform: 'translateX(-50%)',
-        zIndex: 2, // Ensure it's above background elements
+        zIndex: 2,
+        display: "flex", // Added for centering text block
+        flexDirection: "column", // Stack count and subtitle
+        alignItems: "center", // Center items horizontally
+        justifyContent: "center", // Center items vertically
       }}
     >
       <h1
         className={`text-shimmer-effect ${isBouncing ? "bounce-effect" : ""}`}
         style={{
-          fontSize: "3.5rem", // Large, bold numbers
+          fontSize: "3.5rem",
           fontWeight: "bold",
-          color: "#FFFFFF", // Bright white
+          color: "#FFFFFF",
           margin: 0,
-          textShadow:
-            "0 0 10px rgba(255, 255, 255, 0.7), 0 0 20px rgba(78, 255, 161, 0.5)", // White and accent glow
+          textShadow: "0 0 10px rgba(255, 255, 255, 0.7)", // Only white glow
           letterSpacing: "1px",
         }}
       >
-        {count.toLocaleString()} {/* Format number with commas */}
+        {count.toLocaleString()}
       </h1>
+      <p
+        style={{
+          color: "rgba(255, 255, 255, 0.8)",
+          fontSize: "0.9rem",
+          margin: 0,
+          marginTop: "-5px", // Adjust spacing
+          fontWeight: "500",
+          letterSpacing: "0.5px",
+        }}
+      >
+        COINS
+      </p>
     </div>
   );
 };

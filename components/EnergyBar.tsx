@@ -16,15 +16,15 @@ const EnergyBar: React.FC<EnergyBarProps> = ({ currentEnergy, maxEnergy }) => {
         backgroundColor: "rgba(0, 0, 0, 0.3)", // Dark, slightly transparent background
         borderRadius: "10px",
         padding: "3px",
-        border: "1px solid rgba(78, 255, 161, 0.3)", // Subtle glowing border
-        boxShadow: "0 0 10px rgba(78, 255, 161, 0.2)", // Soft glow
+        border: "1px solid rgba(255, 215, 0, 0.4)", // Gold-ish subtle border
+        boxShadow: "0 0 8px rgba(255, 215, 0, 0.3)", // Softer gold glow
         marginBottom: "15px",
       }}
     >
       <div
         style={{
           width: `${energyPercentage}%`,
-          backgroundColor: "#4EFFA1", // Bright accent color
+          backgroundColor: "#FFD700", // Gold color for the energy fill
           height: "18px",
           borderRadius: "7px",
           transition: "width 0.5s ease-in-out",

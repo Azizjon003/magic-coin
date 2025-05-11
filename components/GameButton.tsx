@@ -46,30 +46,25 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
       onClick={handleButtonClick}
       className="game-button"
       style={{
-        width: "200px", // Larger button
-        height: "200px",
-        borderRadius: "50%", // Circular button
-        backgroundColor: "rgba(40, 70, 60, 0.3)", // Semi-transparent greenish-blue base for glass
-        border: "3px solid rgba(78, 255, 161, 0.4)", // Softer, thinner border
+        width: "250px", // Increased size to be the main coin
+        height: "250px", // Increased size
+        borderRadius: "50%",
+        backgroundColor: "#F39C12", // Base orange color for the coin
+        border: "3px solid #D35400", // Darker orange border for some definition
         color: "white",
-        fontSize: "1.5rem",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        position: "relative", // For pseudo-elements like glows or reflections
+        position: "relative",
         outline: "none",
-        // Enhanced glassy effect with multiple layered shadows
         boxShadow: `
           /* Outer Glow */
-          0 0 10px rgba(78, 255, 161, 0.4),
-          0 0 20px rgba(78, 255, 161, 0.3),
-          /* Glass Edge Highlight (Top-ish) */
-          inset 0 3px 5px rgba(120, 255, 200, 0.2),
-          /* Main Inner Shadow for depth */
-          inset 0 -5px 15px rgba(0, 20, 10, 0.5),
-          /* Subtle inner reflection/highlight */
-          inset 0 0 15px rgba(78, 255, 161, 0.2)
+          0 0 15px #FFC300,
+          0 0 30px #F39C12,
+          /* Inner Highlight for 3D effect */
+          inset 0 0 10px rgba(255, 215, 0, 0.5),
+          inset 0 2px 5px rgba(255, 255, 255, 0.3)
         `,
         transition: "transform 0.1s ease, box-shadow 0.2s ease",
       }}
@@ -88,25 +83,23 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
         />
       ))}
 
-      {/* Central glowing element or icon - can be an SVG or styled div */}
-      <div
+      {/* Central glowing element is now the button itself */}
+      {/* The content below can be removed or repurposed if needed, for now, it's effectively hidden by the button's own styling */}
+      {/* <div
         className="game-button-icon"
         style={{
-          width: "70px", // Slightly smaller icon to fit the new glass look
+          width: "70px", 
           height: "70px",
           borderRadius: "50%",
           background:
             "radial-gradient(circle, rgba(100,255,180,1) 0%, rgba(78,255,161,0.7) 50%, rgba(78,255,161,0) 90%)",
           boxShadow:
             "0 0 15px rgba(78,255,161,0.7), 0 0 25px rgba(78,255,161,0.4)",
-          // Add a subtle inner shadow to the icon itself for more depth
-          WebkitBackdropFilter: "blur(5px)", // For a frosted glass effect if supported
+          WebkitBackdropFilter: "blur(5px)", 
           backdropFilter: "blur(5px)",
           border: "1px solid rgba(255, 255, 255, 0.1)",
         }}
-      />
-      {/* You can replace this div with an <Image> or SVG for a more specific coin look */}
-      {/* <span style={{position: 'absolute', fontSize: '1rem', bottom: '20px', color: 'rgba(255,255,255,0.5)'}}>Tap!</span> */}
+      /> */}
     </button>
   );
 };
