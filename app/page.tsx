@@ -24,10 +24,10 @@ export default function HomePage() {
   const [coinCount, setCoinCount] = useState(18); // Updated to match image
   const [isBoostsMenuOpen, setIsBoostsMenuOpen] = useState(false); // State for BoostsMenu
   const [energy, setEnergy] = useState(850); // Example energy
-  const [maxEnergy, setMaxEnergy] = useState(1000); // Example max energy
-  const [friendCount, setFriendCount] = useState(42); // Updated to match image
-  const [leaderboardRank, setLeaderboardRank] = useState(1337); // Updated to match image
-  const [leaderboardBadge, setLeaderboardBadge] = useState(""); // Removed trophy badge
+  const [maxEnergy] = useState(1000); // Example max energy
+  const [friendCount] = useState(42); // Updated to match image
+  const [leaderboardRank] = useState(1337); // Updated to match image
+  const [leaderboardBadge] = useState(""); // Removed trophy badge
   const [regenFeedbackTexts, setRegenFeedbackTexts] = useState<
     RegenFeedbackTextState[]
   >([]); // State for regen texts
