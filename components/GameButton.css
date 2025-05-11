@@ -35,7 +35,8 @@
   /* The base styles are mostly inline in the TSX for dynamic properties */
   /* We can add ::before or ::after for more complex reflections if needed */
   animation: pulseGlow 4s infinite ease-in-out;
-  outline: none;
+  outline: none !important; /* Ensure no outline, more forceful */
+  -webkit-tap-highlight-color: transparent !important; /* Crucial for removing tap highlight in WebViews */
 }
 
 .game-button:focus,
@@ -63,7 +64,7 @@
     0 0 30px rgba(243, 156, 18, 0.4),
     /* Inner Highlight */ inset 0 0 10px rgba(255, 215, 0, 0.5),
     inset 0 2px 5px rgba(255, 255, 255, 0.3) !important; /* Match base inline shadow */
-  /* outline: none; /* Already covered by .game-button:focus */
+  -webkit-tap-highlight-color: transparent !important; /* Also here for belt-and-suspenders */
 }
 
 .game-button-icon {
