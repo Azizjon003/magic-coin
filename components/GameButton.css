@@ -35,6 +35,17 @@
   /* The base styles are mostly inline in the TSX for dynamic properties */
   /* We can add ::before or ::after for more complex reflections if needed */
   animation: pulseGlow 4s infinite ease-in-out;
+  outline: none;
+}
+
+.game-button:focus,
+.game-button:focus-visible {
+  outline: none;
+  box-shadow: 
+    /* Outer Glow - Enhanced */ 0 0 20px rgba(255, 195, 0, 0.8),
+    /* Brighter Orange/Yellow for hover */ 0 0 40px rgba(243, 156, 18, 0.7),
+    /* Inner Highlight - Brighter */ inset 0 0 15px rgba(255, 215, 0, 0.8),
+    inset 0 3px 7px rgba(255, 255, 255, 0.5) !important;
 }
 
 .game-button:hover {
