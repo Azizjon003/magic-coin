@@ -40,12 +40,9 @@
 
 .game-button:focus,
 .game-button:focus-visible {
-  outline: none;
-  box-shadow: 
-    /* Outer Glow - Enhanced */ 0 0 20px rgba(255, 195, 0, 0.8),
-    /* Brighter Orange/Yellow for hover */ 0 0 40px rgba(243, 156, 18, 0.7),
-    /* Inner Highlight - Brighter */ inset 0 0 15px rgba(255, 215, 0, 0.8),
-    inset 0 3px 7px rgba(255, 255, 255, 0.5) !important;
+  outline: none; /* Explicitly remove outline on focus states */
+  /* Keep the same shadow as the normal state or hover state for consistency */
+  /* The shadow is primarily managed by the pulseGlow animation or hover state */
 }
 
 .game-button:hover {
@@ -54,6 +51,19 @@
     /* Brighter Orange/Yellow for hover */ 0 0 40px rgba(243, 156, 18, 0.7),
     /* Inner Highlight - Brighter */ inset 0 0 15px rgba(255, 215, 0, 0.8),
     inset 0 3px 7px rgba(255, 255, 255, 0.5) !important;
+}
+
+/* Define active state to prevent browser default background/shadow changes */
+.game-button:active {
+  /* The transform is handled by onMouseDown/onMouseUp in GameButton.tsx */
+  /* Explicitly set background and shadow to prevent unexpected changes */
+  background-color: #f39c12 !important; /* Match inline style */
+  box-shadow: 
+      /* Outer Glow */ 0 0 15px rgba(255, 195, 0, 0.5),
+    0 0 30px rgba(243, 156, 18, 0.4),
+    /* Inner Highlight */ inset 0 0 10px rgba(255, 215, 0, 0.5),
+    inset 0 2px 5px rgba(255, 255, 255, 0.3) !important; /* Match base inline shadow */
+  /* outline: none; /* Already covered by .game-button:focus */
 }
 
 .game-button-icon {
