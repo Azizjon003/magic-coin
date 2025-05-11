@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import "./GameButton.css"; // For animations and complex styles
 import TapParticle from "./TapParticle"; // Import the particle component
+import ClickFeedbackText from "./ClickFeedbackText"; // Import the new feedback text component
 
 interface GameButtonProps {
   onClick: () => void;
@@ -14,18 +15,28 @@ interface ParticleState {
   y: number;
 }
 
+interface ClickFeedbackTextState {
+  id: string;
+  text: string;
+  x: number;
+  y: number;
+}
+
 const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
   const [particles, setParticles] = useState<ParticleState[]>([]);
+  const [clickFeedbackTexts, setClickFeedbackTexts] = useState<
+    ClickFeedbackTextState[]
+  >([]);
 
   const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     onClick(); // Call original onClick
 
-    // Create a few particles at click location relative to the button
     const rect = event.currentTarget.getBoundingClientRect();
     const clickX = event.clientX - rect.left;
     const clickY = event.clientY - rect.top;
-    const numParticles = 5 + Math.floor(Math.random() * 5); // 5 to 9 particles
 
+    // Create a few particles at click location
+    const numParticles = 5 + Math.floor(Math.random() * 5); // 5 to 9 particles
     const newParticles: ParticleState[] = [];
     for (let i = 0; i < numParticles; i++) {
       newParticles.push({
@@ -35,10 +46,25 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
       });
     }
     setParticles((prevParticles) => [...prevParticles, ...newParticles]);
+
+    // Create a "+1" feedback text
+    const newFeedbackText: ClickFeedbackTextState = {
+      id: `feedback-${Date.now()}`,
+      text: "+1",
+      x: clickX,
+      y: clickY,
+    };
+    setClickFeedbackTexts((prevTexts) => [...prevTexts, newFeedbackText]);
   };
 
   const removeParticle = (id: string) => {
     setParticles((prevParticles) => prevParticles.filter((p) => p.id !== id));
+  };
+
+  const removeClickFeedbackText = (id: string) => {
+    setClickFeedbackTexts((prevTexts) =>
+      prevTexts.filter((text) => text.id !== id)
+    );
   };
 
   return (
@@ -80,6 +106,18 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
           startX={particle.x}
           startY={particle.y}
           onComplete={removeParticle}
+        />
+      ))}
+
+      {/* Render click feedback texts */}
+      {clickFeedbackTexts.map((feedback) => (
+        <ClickFeedbackText
+          key={feedback.id}
+          id={feedback.id}
+          text={feedback.text}
+          x={feedback.x}
+          y={feedback.y}
+          onComplete={removeClickFeedbackText}
         />
       ))}
 
