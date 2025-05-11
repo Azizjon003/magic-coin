@@ -10,71 +10,77 @@ const LeaderboardDisplay: React.FC<LeaderboardDisplayProps> = ({
   rank,
   badge,
 }) => {
-  const [isBouncing, setIsBouncing] = useState(false);
+  // Simplified badge styling based on type
+  const getBadgeStyles = () => {
+    switch (badge.toLowerCase()) {
+      case "platinum":
+        return {
+          backgroundColor: "#E5E4E2",
+          textColor: "#4A4A4A",
+        };
+      case "gold":
+        return {
+          backgroundColor: "#D4AF37",
+          textColor: "#ffffff",
+        };
+      case "silver":
+        return {
+          backgroundColor: "#C0C0C0",
+          textColor: "#333333",
+        };
+      case "bronze":
+        return {
+          backgroundColor: "#CD7F32",
+          textColor: "#ffffff",
+        };
+      default:
+        return {
+          backgroundColor: "#4A90E2",
+          textColor: "#ffffff",
+        };
+    }
+  };
 
-  useEffect(() => {
-    // Trigger bounce if rank changes (and is not the initial rank, assuming rank can be 0 or some initial non-bouncing state)
-    // This logic might need adjustment based on how initial rank is handled.
-    setIsBouncing(true);
-    const timer = setTimeout(() => setIsBouncing(false), 300); // Duration of bounce animation
-    return () => clearTimeout(timer);
-  }, [rank]);
-
-  const badgeColor = badge.toLowerCase() === "platinum" ? "#E5E4E2" : "#D4AF37"; // Platinum or Gold-like
-  const badgeTextColor =
-    badge.toLowerCase() === "platinum" ? "#4A4A4A" : "#ffffff";
-  const badgeTextShadow =
-    badge.toLowerCase() === "platinum"
-      ? "1px 1px 1px #ffffff"
-      : "1px 1px 1px #000000";
+  const badgeStyle = getBadgeStyles();
 
   return (
     <div
       style={{
-        textAlign: "right",
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-end",
+        alignItems: "flex-start",
+        background: "rgba(0, 0, 0, 0.3)",
+        borderRadius: "8px",
+        padding: "8px 12px",
       }}
     >
       <div
-        // className={isBouncing ? 'rank-bounce-effect' : ''} // Add this if using a CSS class
         style={{
-          fontSize: "1.4rem",
+          fontSize: "1.2rem",
           fontWeight: "bold",
-          color: "#E0E0E0", // Light grey, almost white
-          textShadow: "0 0 5px rgba(255, 255, 255, 0.3)", // Subtle glow for rank
-          marginBottom: "2px",
-          transform: isBouncing ? "translateY(-5px)" : "translateY(0)", // Inline bounce part
-          transition: "transform 0.15s ease-out", // Smoothen the bounce a bit
+          color: "#E0E0E0",
+          marginBottom: "5px",
+          display: "flex",
+          alignItems: "center",
         }}
-        onAnimationEnd={() => {
-          if (isBouncing) setTimeout(() => setIsBouncing(false), 150);
-        }} // Reset for next bounce if combined with keyframes
       >
-        Rank: {rank}
+        <span style={{ marginRight: "5px" }}>Rank:</span>
+        <span>{rank}</span>
       </div>
       <div
-        // Apply bounce effect also to the badge container if desired
-        className={isBouncing ? "bounce-effect" : ""} // Reusing bounce-effect from CoinCounter.css
         style={{
           fontSize: "0.9rem",
           fontWeight: "600",
-          color: badgeTextColor,
-          backgroundColor: badgeColor, // Metallic background
-          padding: "3px 8px",
-          borderRadius: "5px",
-          border: `1px solid ${badgeTextColor}`,
-          boxShadow: `0 0 10px ${badgeColor}, inset 0 0 3px rgba(0,0,0,0.2)`,
-          textShadow: badgeTextShadow,
+          color: badgeStyle.textColor,
+          backgroundColor: badgeStyle.backgroundColor,
+          padding: "4px 10px",
+          borderRadius: "4px",
           minWidth: "80px",
           textAlign: "center",
-          // transform: isBouncing ? 'translateY(-5px)' : 'translateY(0)', // Replaced by class
-          // transition: 'transform 0.15s ease-out', // Handled by class
+          textTransform: "uppercase",
         }}
       >
-        <span className="text-shimmer-effect">{badge}</span>{" "}
-        {/* Apply shimmer to badge text */}
+        {badge}
       </div>
     </div>
   );

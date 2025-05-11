@@ -15,7 +15,7 @@ const TapParticle: React.FC<TapParticleProps> = ({
 }) => {
   const [opacity, setOpacity] = useState(1);
   const [transform, setTransform] = useState(`translate(0px, 0px) scale(1)`);
-  const duration = 500 + Math.random() * 300; // Particle lifespan: 0.5s to 0.8s
+  const [duration] = useState(() => 500 + Math.random() * 300);
 
   useEffect(() => {
     const targetX = (Math.random() - 0.5) * 100; // Spread X: -50px to +50px
@@ -31,7 +31,7 @@ const TapParticle: React.FC<TapParticleProps> = ({
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [id, onComplete, duration]);
+  }, [id, onComplete]);
 
   return (
     <div

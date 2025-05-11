@@ -11,13 +11,13 @@ import LeaderboardDisplay from "../components/LeaderboardDisplay"; // Import Lea
 import ActionButton from "../components/ActionButton"; // Import ActionButton
 
 export default function HomePage() {
-  const [coinCount, setCoinCount] = useState(0);
+  const [coinCount, setCoinCount] = useState(18); // Updated to match image
   const [isBoostsMenuOpen, setIsBoostsMenuOpen] = useState(false); // State for BoostsMenu
   const [energy, setEnergy] = useState(850); // Example energy
   const [maxEnergy, setMaxEnergy] = useState(1000); // Example max energy
-  const [friendCount, setFriendCount] = useState(123); // Example friend count
-  const [leaderboardRank, setLeaderboardRank] = useState(7); // Example rank
-  const [leaderboardBadge, setLeaderboardBadge] = useState("Platinum"); // Example badge
+  const [friendCount, setFriendCount] = useState(42); // Updated to match image
+  const [leaderboardRank, setLeaderboardRank] = useState(1337); // Updated to match image
+  const [leaderboardBadge, setLeaderboardBadge] = useState(""); // Removed trophy badge
 
   const handleCoinClick = () => {
     setCoinCount((prev) => prev + 1);
@@ -34,58 +34,54 @@ export default function HomePage() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "space-between",
+        justifyContent: "space-between", // Keep space-between for overall structure
         minHeight: "100vh",
         padding: "1rem",
         position: "relative",
-        // Updated radial gradient with greenish-blue hues AND added CSS noise
+        // Updated radial gradient to match the image's dark blue/purple theme
         background: `
-          linear-gradient(rgba(0,0,0,0.03), rgba(0,0,0,0.03)),
-          radial-gradient(ellipse at center, #183830 0%, #081810 70%)
+          radial-gradient(ellipse at center, #202040 0%, #0A0A15 70%)
         `,
-        // For a more pronounced noise, you might use multiple linear gradients or a pseudo-element with a noise SVG/image.
-        // Example for more detailed noise (can be performance intensive if too many layers):
-        // background: `
-        //   linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)),
-        //   linear-gradient(45deg, rgba(0,0,0,0.01) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.01) 75%, rgba(0,0,0,0.01)) 0.5px 0.5px,
-        //   radial-gradient(ellipse at center, #183830 0%, #081810 70%)
-        // `,
-        // backgroundSize: '1px 1px, 1px 1px, auto', // If using the more detailed noise example
         color: "#fff",
         overflow: "hidden",
       }}
     >
-      {/* Top Section: Coin Counter & Leaderboard */}
+      {/* Top Section: Leaderboard, Settings, Friends */}
       <div
         style={{
           width: "100%",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "flex-start",
-          padding: "0 1rem",
+          alignItems: "center", // Changed to center for vertical alignment
+          padding: "0 1rem", // Keep padding
           position: "absolute",
           top: "20px",
           zIndex: 2,
         }}
       >
-        <CoinCounter count={coinCount} />
         <LeaderboardDisplay rank={leaderboardRank} badge={leaderboardBadge} />
+        {/* Placeholder for Settings Icon - Will require an icon component */}
+        <div style={{ fontSize: "1.5rem" }}></div>
+        <FriendCounter count={friendCount} />
       </div>
 
-      {/* Center Section: Game Button */}
+      {/* Center Section: Coins, Energy Bar, Game Button */}
       <div
         style={{
           flexGrow: 1,
           display: "flex",
+          flexDirection: "column", // Stack coin count, energy bar, and button vertically
           alignItems: "center",
           justifyContent: "center",
-          width: "100%", // Ensure it takes full width for centering the button
+          width: "100%",
         }}
       >
+        <CoinCounter count={coinCount} />
+        <EnergyBar currentEnergy={energy} maxEnergy={maxEnergy} />
         <GameButton onClick={handleCoinClick} />
       </div>
 
-      {/* Bottom Section: Energy, Friends, Buttons */}
+      {/* Bottom Section: Action Buttons & Info Icon */}
       <div
         style={{
           width: "100%",
@@ -98,25 +94,39 @@ export default function HomePage() {
           zIndex: 2,
         }}
       >
-        <EnergyBar currentEnergy={energy} maxEnergy={maxEnergy} />
-        <FriendCounter count={friendCount} />
-
-        {/* Action Buttons */}
+        {/* Action Buttons Row */}
         <div
           style={{
             display: "flex",
-            justifyContent: "space-around",
+            justifyContent: "space-around", // space-around for main buttons
+            alignItems: "center", // Align items for info icon
             width: "100%",
-            maxWidth: "380px",
+            maxWidth: "420px", // Adjusted for potential info icon space
           }}
         >
-          <ActionButton onClick={() => console.log("Frens clicked")}>
-            Frens
-          </ActionButton>
-          <ActionButton onClick={() => console.log("Earn clicked")}>
-            Earn
-          </ActionButton>
-          <ActionButton onClick={toggleBoostsMenu}>Boosts</ActionButton>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+              width: "calc(100% - 40px)", // Adjust width to make space for info icon
+              maxWidth: "380px",
+            }}
+          >
+            <ActionButton onClick={() => console.log("Frens clicked")}>
+              {/* Placeholder for Frens Icon */}
+              <span>Frens</span>
+            </ActionButton>
+            <ActionButton onClick={() => console.log("Earn clicked")}>
+              {/* Placeholder for Earn Icon */}
+              <span>Earn</span>
+            </ActionButton>
+            <ActionButton onClick={toggleBoostsMenu}>
+              {/* Placeholder for Boosts Icon */}
+              <span>Boosts</span>
+            </ActionButton>
+          </div>
+          {/* Placeholder for Info Icon - Will require an icon component */}
+          <div style={{ fontSize: "1.5rem", marginLeft: "10px" }}></div>
         </div>
       </div>
 
