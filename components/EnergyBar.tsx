@@ -13,37 +13,24 @@ const EnergyBar: React.FC<EnergyBarProps> = ({ currentEnergy, maxEnergy }) => {
       style={{
         width: "80%",
         maxWidth: "350px",
-        backgroundColor: "rgba(0, 0, 0, 0.3)", // Dark, slightly transparent background
+        backgroundColor: "rgba(0, 0, 0, 0.2)", // Slightly more transparent track background
         borderRadius: "10px",
-        padding: "3px",
-        border: "1px solid rgba(255, 215, 0, 0.4)", // Gold-ish subtle border
-        boxShadow: "0 0 8px rgba(255, 215, 0, 0.3)", // Softer gold glow
-        marginBottom: "15px",
+        marginBottom: "20px", // Adjusted margin for spacing like in the image
+        height: "12px", // Made the bar thinner to match image
+        display: "flex", // Added to help align inner bar if needed, though not strictly necessary for this simple case
+        alignItems: "center", // Vertically center the fill if padding was present on inner
       }}
     >
       <div
         style={{
           width: `${energyPercentage}%`,
-          backgroundColor: "#FFD700", // Gold color for the energy fill
-          height: "18px",
-          borderRadius: "7px",
+          backgroundColor: "#25DE7A", // Notcoin-like green for the energy fill
+          height: "100%", // Fill the height of the container
+          borderRadius: "8px", // Slightly smaller border radius for the fill
           transition: "width 0.5s ease-in-out",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          boxShadow: "inset 0 0 5px rgba(0,0,0,0.2)", // Inner shadow for depth
         }}
       >
-        <span
-          style={{
-            color: "#1A1A1D",
-            fontWeight: "bold",
-            fontSize: "0.8rem",
-            textShadow: "0 0 2px rgba(0,0,0,0.3)", // Slight text shadow
-          }}
-        >
-          {currentEnergy} / {maxEnergy}
-        </span>
+        {/* Removed energy text display */}
       </div>
     </div>
   );
