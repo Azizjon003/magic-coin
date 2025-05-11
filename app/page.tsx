@@ -15,6 +15,8 @@ const ENERGY_REGENERATION_RATE = 10;
 const ENERGY_REGENERATION_INTERVAL = 1000;
 const AUTO_CLICK_RATE = 5; // Coins per auto-click event
 const AUTO_CLICK_INTERVAL = 1000; // Milliseconds (1 second for auto-click)
+const CRITICAL_CLICK_CHANCE = 0.1; // 10% chance
+const CRITICAL_CLICK_MULTIPLIER = 5; // 5x bonus
 
 interface RegenFeedbackTextState {
   // Interface for regen feedback text
@@ -38,18 +40,28 @@ export default function HomePage() {
   const [isAutoClickActive, setIsAutoClickActive] = useState(false);
   const [clickPower, setClickPower] = useState(5); // User changed this to 5
   const [isX2MultiplierActive, setIsX2MultiplierActive] = useState(true); // New state for x2 Multiplier
+  const [lastClickInfo, setLastClickInfo] = useState<{
+    amount: number;
+    isCritical: boolean;
+  } | null>(null);
 
   const handleCoinClick = () => {
     if (energy >= 10) {
       let amountToAdd = clickPower;
+      let isCritical = false;
+
       if (isX2MultiplierActive) {
         amountToAdd *= 2;
       }
+
+      if (Math.random() < CRITICAL_CLICK_CHANCE) {
+        amountToAdd *= CRITICAL_CLICK_MULTIPLIER;
+        isCritical = true;
+      }
+
       setCoinCount((prev) => prev + amountToAdd);
       setEnergy((prev) => Math.max(0, prev - 10));
-      // GameButton will still display base clickPower in its +N text via props,
-      // or we could pass the final calculated `amountToAdd` to GameButton if we want it to show `+10` instead of `+5` when x2 is active.
-      // For now, let's keep it simple: GameButton shows `+baseClickPower`.
+      setLastClickInfo({ amount: amountToAdd, isCritical });
     }
   };
 
@@ -196,7 +208,7 @@ export default function HomePage() {
             (+{ENERGY_REGENERATION_RATE}/s)
           </span>
         </div>
-        <GameButton onInteraction={handleCoinClick} clickPower={clickPower} />
+        <GameButton onClick={handleCoinClick} lastClickInfo={lastClickInfo} />
       </div>
 
       {/* Bottom Section: Action Buttons & Info Icon */}

@@ -1,17 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./GameButton.css"; // For animations and complex styles
 import TapParticle from "./TapParticle"; // Import the particle component
 import ClickFeedbackText from "./ClickFeedbackText"; // Import the new feedback text component
 
 interface GameButtonProps {
-  onInteraction: (
-    clientX: number,
-    clientY: number,
-    currentTarget: HTMLButtonElement
-  ) => void;
-  clickPower: number;
+  onClick: () => void; // To trigger game logic in parent
+  lastClickInfo: { amount: number; isCritical: boolean } | null; // Info about the last click
 }
 
 interface ParticleState {
@@ -27,56 +23,79 @@ interface ClickFeedbackTextState {
   y: number;
 }
 
-const GameButton: React.FC<GameButtonProps> = ({
-  onInteraction,
-  clickPower,
-}) => {
+const GameButton: React.FC<GameButtonProps> = ({ onClick, lastClickInfo }) => {
   const [particles, setParticles] = useState<ParticleState[]>([]);
   const [clickFeedbackTexts, setClickFeedbackTexts] = useState<
     ClickFeedbackTextState[]
   >([]);
 
-  const handleLocalInteraction = (
-    clientX: number,
-    clientY: number,
-    currentTarget: HTMLButtonElement
+  // Store the button ref to get its dimensions for positioning particles/text
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  // Effect to create feedback text when lastClickInfo changes
+  useEffect(() => {
+    if (lastClickInfo && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      // Attempt to place feedback near the center of the button, or a random spot
+      // This is a simplified positioning, might need adjustment
+      const x = rect.width / 2 + (Math.random() - 0.5) * (rect.width * 0.4);
+      const y = rect.height / 2 + (Math.random() - 0.5) * (rect.height * 0.4);
+
+      const newFeedbackText: ClickFeedbackTextState = {
+        id: `feedback-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
+        text: `${lastClickInfo.isCritical ? "CRIT! " : ""}+${
+          lastClickInfo.amount
+        }`,
+        x: x,
+        y: y,
+        // We can add an isCritical prop to ClickFeedbackTextState if we want to style it differently
+      };
+      setClickFeedbackTexts((prevTexts) => [...prevTexts, newFeedbackText]);
+    }
+  }, [lastClickInfo]); // Trigger when lastClickInfo changes
+
+  const handleInteractionEvents = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>
   ) => {
-    onInteraction(clientX, clientY, currentTarget);
+    onClick(); // Trigger the main game logic from parent
 
-    const rect = currentTarget.getBoundingClientRect();
-    const interactionX = clientX - rect.left;
-    const interactionY = clientY - rect.top;
+    if (!buttonRef.current) return;
 
-    const numParticles = 3 + Math.floor(Math.random() * 3);
-    const newParticles: ParticleState[] = [];
-    for (let i = 0; i < numParticles; i++) {
-      newParticles.push({
-        id: `particle-${Date.now()}-${Math.random()
-          .toString(36)
-          .substr(2, 5)}-${i}`,
-        x: interactionX,
-        y: interactionY,
+    // Particle generation logic (can be triggered per touch point in TouchEvent)
+    let interactionPoints: Array<{ clientX: number; clientY: number }> = [];
+    if ("changedTouches" in event) {
+      // TouchEvent
+      interactionPoints = Array.from(
+        (event as React.TouchEvent<HTMLButtonElement>).changedTouches
+      ).map((t) => ({ clientX: t.clientX, clientY: t.clientY }));
+    } else {
+      // MouseEvent
+      interactionPoints.push({
+        clientX: (event as React.MouseEvent<HTMLButtonElement>).clientX,
+        clientY: (event as React.MouseEvent<HTMLButtonElement>).clientY,
       });
     }
-    setParticles((prevParticles) => [...prevParticles, ...newParticles]);
 
-    const newFeedbackText: ClickFeedbackTextState = {
-      id: `feedback-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-      text: `+${clickPower}`,
-      x: interactionX,
-      y: interactionY,
-    };
-    setClickFeedbackTexts((prevTexts) => [...prevTexts, newFeedbackText]);
-  };
+    const rect = buttonRef.current.getBoundingClientRect();
+    const newParticlesBatch: ParticleState[] = [];
 
-  const handleMouseClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    handleLocalInteraction(event.clientX, event.clientY, event.currentTarget);
-  };
-
-  const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
-    Array.from(event.changedTouches).forEach((touch) => {
-      handleLocalInteraction(touch.clientX, touch.clientY, event.currentTarget);
+    interactionPoints.forEach((point) => {
+      const interactionX = point.clientX - rect.left;
+      const interactionY = point.clientY - rect.top;
+      const numParticles = 2 + Math.floor(Math.random() * 2); // Reduced particles: 2-3
+      for (let i = 0; i < numParticles; i++) {
+        newParticlesBatch.push({
+          id: `particle-${Date.now()}-${Math.random()
+            .toString(36)
+            .substr(2, 5)}-${point.clientX}-${i}`,
+          x: interactionX,
+          y: interactionY,
+        });
+      }
     });
+    setParticles((prevParticles) => [...prevParticles, ...newParticlesBatch]);
   };
 
   const removeParticle = (id: string) => {
@@ -91,8 +110,9 @@ const GameButton: React.FC<GameButtonProps> = ({
 
   return (
     <button
-      onClick={handleMouseClick}
-      onTouchStart={handleTouchStart}
+      ref={buttonRef} // Assign ref to the button
+      onClick={handleInteractionEvents}
+      onTouchStart={handleInteractionEvents}
       className="game-button"
       style={{
         width: "250px",
@@ -108,10 +128,8 @@ const GameButton: React.FC<GameButtonProps> = ({
         position: "relative",
         outline: "none",
         boxShadow: `
-          /* Outer Glow */
           0 0 15px #FFC300,
           0 0 30px #F39C12,
-          /* Inner Highlight for 3D effect */
           inset 0 0 10px rgba(255, 215, 0, 0.5),
           inset 0 2px 5px rgba(255, 255, 255, 0.3)
         `,
@@ -130,7 +148,6 @@ const GameButton: React.FC<GameButtonProps> = ({
           onComplete={removeParticle}
         />
       ))}
-
       {clickFeedbackTexts.map((feedback) => (
         <ClickFeedbackText
           key={feedback.id}
@@ -139,6 +156,7 @@ const GameButton: React.FC<GameButtonProps> = ({
           x={feedback.x}
           y={feedback.y}
           onComplete={removeClickFeedbackText}
+          // We could pass isCritical here if ClickFeedbackText is adapted
         />
       ))}
     </button>
