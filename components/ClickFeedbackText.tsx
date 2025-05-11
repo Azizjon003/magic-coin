@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import styles from "./ClickFeedbackText.module.css"; // Import CSS module
 
 interface ClickFeedbackTextProps {
   id: string;
@@ -8,64 +9,43 @@ interface ClickFeedbackTextProps {
   onComplete: (id: string) => void;
 }
 
-const ClickFeedbackText: React.FC<ClickFeedbackTextProps> = ({
+// Renamed original component for React.memo
+const ClickFeedbackTextComponent: React.FC<ClickFeedbackTextProps> = ({
   id,
   text,
   x,
   y,
   onComplete,
 }) => {
-  const [style, setStyle] = useState({
-    opacity: 1,
-    transform: "translateY(0px)",
-  });
-  const animationDuration = 800; // milliseconds
+  const animationDuration = 800; // Must match CSS animation-duration
 
   useEffect(() => {
-    // Animate upwards and fade out
-    const animateTimeout = setTimeout(() => {
-      setStyle({
-        opacity: 0,
-        transform: "translateY(-30px)", // Move 30px upwards
-      });
-    }, 50); // Start animation shortly after mount
-
-    // Call onComplete after animation finishes
+    // Call onComplete after animation finishes to remove the element from state
     const completeTimeout = setTimeout(() => {
       onComplete(id);
     }, animationDuration);
 
     return () => {
-      clearTimeout(animateTimeout);
       clearTimeout(completeTimeout);
     };
-  }, [id, onComplete, animationDuration]);
+    // animationDuration is constant, not needed in deps if defined outside or as a const inside
+  }, [id, onComplete]);
 
   return (
     <div
+      className={`${styles.feedbackText} ${styles.animate}`}
       style={{
-        position: "absolute",
         left: `${x}px`,
         top: `${y}px`,
-        color: "#FFFFFF", // White color for the text
-        fontSize: "1.2rem", // Adjust size as needed
-        fontWeight: "bold",
-        pointerEvents: "none", // Prevent interference with other clicks
-        opacity: style.opacity,
-        transform: style.transform,
-        transition: `opacity ${animationDuration * 0.9}ms ease-out, transform ${
-          animationDuration * 0.9
-        }ms ease-out`,
-        zIndex: 20, // Ensure it's above particles if any overlap
-        textShadow: "0 0 5px rgba(0,0,0,0.7)", // Slight shadow for readability
-        // Adjust starting position to be more centered on the click
-        marginLeft: "-0.6em", // Half of an average character width for font size 1.2rem
-        marginTop: "-0.6em", // Half of the font size
+        // Other styles previously here are now in ClickFeedbackText.module.css
+        // We only keep dynamic styles (left, top) here
       }}
     >
       {text}
     </div>
   );
 };
+
+const ClickFeedbackText = React.memo(ClickFeedbackTextComponent);
 
 export default ClickFeedbackText;

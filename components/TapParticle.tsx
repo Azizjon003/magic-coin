@@ -7,7 +7,7 @@ interface TapParticleProps {
   onComplete: (id: string) => void;
 }
 
-const TapParticle: React.FC<TapParticleProps> = ({
+const TapParticleComponent: React.FC<TapParticleProps> = ({
   id,
   startX,
   startY,
@@ -53,5 +53,8 @@ const TapParticle: React.FC<TapParticleProps> = ({
     />
   );
 };
+
+// Wrap TapParticleComponent with React.memo
+const TapParticle = React.memo(TapParticleComponent);
 
 export default TapParticle;

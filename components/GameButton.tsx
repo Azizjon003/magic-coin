@@ -28,33 +28,51 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
     ClickFeedbackTextState[]
   >([]);
 
-  const handleButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    onClick(); // Call original onClick
+  // Combined handler for both mouse click and touch start
+  const handleInteraction = (
+    clientX: number,
+    clientY: number,
+    currentTarget: HTMLButtonElement
+  ) => {
+    onClick(); // Call original onClick passed from parent (e.g., to update coin count)
 
-    const rect = event.currentTarget.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
+    const rect = currentTarget.getBoundingClientRect();
+    const interactionX = clientX - rect.left;
+    const interactionY = clientY - rect.top;
 
-    // Create a few particles at click location
-    const numParticles = 5 + Math.floor(Math.random() * 5); // 5 to 9 particles
+    // Create a few particles at interaction location
+    const numParticles = 3 + Math.floor(Math.random() * 3); // Reduced: 3 to 5 particles
     const newParticles: ParticleState[] = [];
     for (let i = 0; i < numParticles; i++) {
       newParticles.push({
-        id: `particle-${Date.now()}-${i}`,
-        x: clickX,
-        y: clickY,
+        id: `particle-${Date.now()}-${Math.random()
+          .toString(36)
+          .substr(2, 5)}-${i}`,
+        x: interactionX,
+        y: interactionY,
       });
     }
     setParticles((prevParticles) => [...prevParticles, ...newParticles]);
 
     // Create a "+1" feedback text
     const newFeedbackText: ClickFeedbackTextState = {
-      id: `feedback-${Date.now()}`,
+      id: `feedback-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
       text: "+1",
-      x: clickX,
-      y: clickY,
+      x: interactionX,
+      y: interactionY,
     };
     setClickFeedbackTexts((prevTexts) => [...prevTexts, newFeedbackText]);
+  };
+
+  const handleMouseClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    handleInteraction(event.clientX, event.clientY, event.currentTarget);
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+    // Iterate over all new touches (fingers)
+    Array.from(event.changedTouches).forEach((touch) => {
+      handleInteraction(touch.clientX, touch.clientY, event.currentTarget);
+    });
   };
 
   const removeParticle = (id: string) => {
@@ -69,7 +87,8 @@ const GameButton: React.FC<GameButtonProps> = ({ onClick }) => {
 
   return (
     <button
-      onClick={handleButtonClick}
+      onClick={handleMouseClick} // Keep for desktop compatibility
+      onTouchStart={handleTouchStart} // Add touch handler for multi-touch
       className="game-button"
       style={{
         width: "250px", // Increased size to be the main coin

@@ -1,0 +1,35 @@
+/* components/ClickFeedbackText.module.css */
+
+@keyframes fadeUpAndOut {
+  0% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+  }
+  80%,
+  100% {
+    /* Hold visibility for a bit then fade and move completely */
+    opacity: 0;
+    transform: translateY(-35px) scale(0.9);
+  }
+}
+
+.feedbackText {
+  position: absolute;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 20;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  /* Centering adjustments */
+  margin-left: -0.6em;
+  margin-top: -0.6em;
+  /* Animation will be applied via className */
+}
+
+.animate {
+  animation-name: fadeUpAndOut;
+  animation-duration: 800ms; /* Matches previous animationDuration */
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards; /* Keeps the state of the last keyframe */
+}
