@@ -4,8 +4,8 @@
   border-radius: 50%; /* Circular button */
   background: linear-gradient(
     145deg,
-    #4effa1,
-    #2bb87b
+    #f39c12,
+    /* Orange */ #ffc300 /* Yellow */
   ); /* Example gradient - replace with your primary accent */
   color: white;
   font-size: 2rem;
@@ -17,7 +17,7 @@
   justify-content: center;
   text-align: center;
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2),
-    0px 0px 5px rgba(78, 255, 161, 0.5);
+    0px 0px 5px rgba(243, 156, 18, 0.5); /* Orange glow */
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
   user-select: none; /* Prevent text selection on rapid clicks */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
@@ -26,7 +26,7 @@
 .gameButton:active {
   transform: scale(0.95); /* Click feedback: slight shrink */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3),
-    0px 0px 3px rgba(78, 255, 161, 0.7);
+    0px 0px 3px rgba(243, 156, 18, 0.7); /* Darker orange glow for active state */
 }
 
 .buttonText {
