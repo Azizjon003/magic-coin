@@ -1,0 +1,20 @@
+.counterContainer {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px; /* Rounded corners for the counter */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Position will be handled by the parent in HomePage */
+}
+
+.coinIcon {
+  font-size: 1.5rem; /* Adjust size as needed */
+  margin-right: 8px;
+}
+
+.countText {
+  font-size: 1.25rem; /* Large, clear font for the count */
+  font-weight: bold;
+  color: #ffd700; /* Gold color for the coin count text */
+}

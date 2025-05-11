@@ -1,0 +1,36 @@
+.gameButton {
+  width: 200px; /* Large tappable area */
+  height: 200px;
+  border-radius: 50%; /* Circular button */
+  background: linear-gradient(
+    145deg,
+    #4effa1,
+    #2bb87b
+  ); /* Example gradient - replace with your primary accent */
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.2),
+    0px 0px 5px rgba(78, 255, 161, 0.5);
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  user-select: none; /* Prevent text selection on rapid clicks */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+}
+
+.gameButton:active {
+  transform: scale(0.95); /* Click feedback: slight shrink */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3),
+    0px 0px 3px rgba(78, 255, 161, 0.7);
+}
+
+.buttonText {
+  /* Additional styling for text inside the button if needed */
+}
+
+/* Later, we can add keyframes for particle animations here */
